@@ -79,7 +79,7 @@ bool MPWaitSema(mpSema hSema, int dwMSec)
 
     pthread_mutex_lock(&pObj->AccessMutex);
 
-    while(pObj->nSignalCnt == 0)
+    //while(pObj->nSignalCnt == 0)
     {
         if (dwMSec == MP_DWINFINIT)
         {
@@ -111,7 +111,7 @@ bool MPWaitSema(mpSema hSema, int dwMSec)
             }
         }
     }
-    pObj->nSignalCnt--;
+    //pObj->nSignalCnt--;
 
 err_clean:
     pthread_mutex_unlock(&pObj->AccessMutex);
@@ -124,7 +124,7 @@ void MPSignalSema(mpSema hSema)
     if (pObj == NULL) return;
 
     pthread_mutex_lock(&pObj->AccessMutex);
-    pObj->nSignalCnt++;
+    //pObj->nSignalCnt++;
     pthread_cond_broadcast(&pObj->WaitCondition);
     pthread_mutex_unlock(&pObj->AccessMutex);
     return;

@@ -3,6 +3,7 @@
 #include "readsend.h"
 
 #define SEND_COST_TM_ONE_HALF       20*1.5
+#define READ_COST_TM                20
 
 BufferObj::BufferObj()
 {
@@ -234,7 +235,7 @@ void MPSleep(int timeMs)
 
 void TestReadThread::Read(void *pBuffer, size_t iBufLen)
 {
-    MPSleep(5);
+    MPSleep(READ_COST_TM);
     //cout << "TsetReadThread::Read" << endl;
 }
 
