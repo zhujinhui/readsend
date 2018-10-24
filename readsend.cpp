@@ -56,6 +56,8 @@ void LoopBuffers::lock()
 {
     // the only one to protected is m_head when checkout by READ and checkin by SEND
     // as the same as m_rear, but maybe not necessary too much to protect
+    // because there is only one READ and only one SEND, otherwise, we must protect and
+    // READ should call signal only, and SEND should call wait only
 
     //pthread_mutex_lock(&m_mutex);
 }
