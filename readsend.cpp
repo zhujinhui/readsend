@@ -2,8 +2,7 @@
 #include <sys/prctl.h>
 #include "readsend.h"
 
-#define ENTER_CRITICAL_SECTION()
-#define LEAVE_CRITICAL_SECTION()
+#define SEND_COST_TM_ONE_HALF       20*1.5
 
 BufferObj::BufferObj()
 {
@@ -209,7 +208,7 @@ void ReadThread::Process()
 
     if (have == false)
     {
-        have = m_LoopBuffers.wait(30);    // 1.5 X time of sending one buffer
+        have = m_LoopBuffers.wait(SEND_COST_TM_ONE_HALF);    // 1.5 X time of sending one buffer
         if (have == false)
             return;         // no buffer for now, return to thread loop, which give a chance to exit thread.
         else
