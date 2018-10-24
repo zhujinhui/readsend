@@ -54,12 +54,15 @@ LoopBuffers::~LoopBuffers()
 
 void LoopBuffers::lock()
 {
-    pthread_mutex_lock(&m_mutex);
+    // the only one to protected is m_head when checkout by READ and checkin by SEND
+    // as the same as m_rear, but maybe not necessary too much to protect
+
+    //pthread_mutex_lock(&m_mutex);
 }
 
 void LoopBuffers::unlock()
 {
-    pthread_mutex_unlock(&m_mutex);
+    //pthread_mutex_unlock(&m_mutex);
 }
 
 bool LoopBuffers::checkout(BufferObj &obj, bool read)
@@ -74,7 +77,7 @@ bool LoopBuffers::checkout(BufferObj &obj, bool read)
             if (m_head == m_rear)
             {
                 // full
-                //cout << "[RS][READ] LoopBuffer Full rear:" << m_rear << " head:" << m_head << endl;
+                cout << "[RS][READ] Checkout Full" << endl;
                 unlock();
                 return false;
             }
@@ -83,7 +86,7 @@ bool LoopBuffers::checkout(BufferObj &obj, bool read)
         {
             m_first = false;
         }
-        cout << "[RS][READ] checked out rear:" << m_rear << " head:" << m_head << endl;
+        cout << "[RS][READ] Checkout:" << m_rear << endl;
         obj = m_BufferVector.at(m_rear);
         unlock();
         return true;
@@ -94,11 +97,11 @@ bool LoopBuffers::checkout(BufferObj &obj, bool read)
         if (m_head == m_rear)
         {
             // empty
-            //cout << "[RS][SEND] LoopBuffer Empty rear:" << m_rear << " head:" << m_head << endl;
+            cout << "[RS][SEND] Checkout Empty" << endl;
             unlock();
             return false;
         }
-        cout << "[RS][SEND] checked out rear:" << m_rear << " head:" << m_head << endl;
+        cout << "[RS][SEND] Checkout:" << m_head << endl;
         obj = m_BufferVector.at(m_head);
         unlock();
         return true;
@@ -117,15 +120,15 @@ void LoopBuffers::checkin(BufferObj obj, bool read)
             if (read)
             {
                 // produce finish
+                cout << "[RS][READ] Checkin:" << m_rear << endl;
                 m_rear = (m_rear+1)%m_size;
-                cout << "[RS][READ] checked in rear:" << m_rear << " head:" << m_head << endl;
                 break;
             }
             else
             {
                 // consume finish
+                cout << "[RS][SEND] Checkin:" << m_head << endl;
                 m_head = (m_head+1)%m_size;
-                cout << "[RS][SEND] checked in rear:" << m_rear << " head:" << m_head << endl;
                 break;
             }
         }
