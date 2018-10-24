@@ -201,7 +201,7 @@ void ReadThread::StopThread()
 {
     void * ret = NULL;
     m_status = ReadThread::__stop;
-    pthread_join(m_threadId, &ret);     //TODO: if thread waiting for checkout, we can't join it.
+    pthread_join(m_threadId, &ret);
 }
 
 void ReadThread::Process()
